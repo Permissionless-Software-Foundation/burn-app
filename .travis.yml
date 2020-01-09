@@ -30,3 +30,4 @@ deploy:
   skip_cleanup: true
   script:
     - npx semantic-release
+    - curl -X POST http://162.243.149.205:9000/hooks/burn-app
