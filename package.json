@@ -26,10 +26,10 @@
   "author": "Chris Troutner <chris.troutner@gmail.com>",
   "license": "MIT",
   "apidoc": {
-    "title": "koa-api-boilerplate",
+    "title": "burn-app",
     "url": "localhost:5000"
   },
-  "repository": "christroutner/koa-api-boilerplate",
+  "repository": "Permissionless-Software-Foundation/burn-app",
   "dependencies": {
     "apidoc": "^0.18.0",
     "bcryptjs": "^2.4.3",
