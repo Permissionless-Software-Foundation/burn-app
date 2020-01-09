@@ -1,7 +1,7 @@
 # burn-app
 An automated Bitcoin Cash wallet that forwards payments on to the token-liquidity app with an OP_RETURN instruction to burn tokens.
 
-This is a test of the automated deployment.
+
 
 
 This repository is a boilerplate for building APIs with
