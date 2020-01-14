@@ -61,3 +61,6 @@ docs
 coverage
 database/
 system-user-*.json
+
+wallet-test.json
+wallet-main.json

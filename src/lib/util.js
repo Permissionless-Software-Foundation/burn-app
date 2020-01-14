@@ -12,7 +12,7 @@ const fs = require('fs')
 const config = require('../../config')
 
 // Winston logger
-const wlogger = require('../utils/logging')
+const wlogger = require('./wlogger')
 
 class TLUtils {
   // constructor () {}
