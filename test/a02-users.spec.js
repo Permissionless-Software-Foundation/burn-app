@@ -1,7 +1,7 @@
 const testUtils = require('./utils')
-const rp = require('request-promise')
 const assert = require('chai').assert
 const config = require('../config')
+const axios = require('axios').default
 
 const util = require('util')
 util.inspect.defaultOptions = { depth: 1 }
@@ -16,7 +16,7 @@ describe('Users', () => {
 
     // Create a second test user.
     const userObj = {
-      username: 'test2',
+      email: 'test2@test.com',
       password: 'pass2'
     }
     const testUser = await testUtils.createUser(userObj)
@@ -43,65 +43,119 @@ describe('Users', () => {
       try {
         const options = {
           method: 'POST',
-          uri: `${LOCALHOST}/users`,
-          resolveWithFullResponse: true,
-          json: true,
-          body: {
-            username: 'supercoolname'
+          url: `${LOCALHOST}/users`,
+          data: {
+            email: 'test2@test.com'
           }
         }
 
-        let result = await rp(options)
+        const result = await axios(options)
 
-        console.log(`result stringified: ${JSON.stringify(result, null, 2)}`)
+        console.log(
+          `result stringified: ${JSON.stringify(result.data, null, 2)}`
+        )
         assert(false, 'Unexpected result')
       } catch (err) {
-        if (err.statusCode === 422) {
-          assert(err.statusCode === 422, 'Error code 422 expected.')
-        } else if (err.statusCode === 401) {
-          assert(err.statusCode === 401, 'Error code 401 expected.')
-        } else {
-          console.error('Error: ', err)
-          console.log('Error stringified: ' + JSON.stringify(err, null, 2))
-          throw err
-        }
+        assert(err.response.status === 422, 'Error code 422 expected.')
       }
     })
 
-    it('should sign up', async () => {
+    it('should reject signup if no email property is provided', async () => {
       try {
         const options = {
           method: 'POST',
-          uri: `${LOCALHOST}/users`,
-          resolveWithFullResponse: true,
-          json: true,
-          body: {
-            user: { username: 'supercoolname', password: 'supersecretpassword' }
+          url: `${LOCALHOST}/users`,
+          data: {
+            user: {
+              password: 'pass2'
+            }
           }
         }
+        await axios(options)
 
-        let result = await rp(options)
-        // console.log(`result: ${JSON.stringify(result, null, 2)}`)
-
-        context.user = result.body.user
-        context.token = result.body.token
-
-        assert(result.statusCode === 200, 'Status Code 200 expected.')
-        assert(
-          result.body.user.username === 'supercoolname',
-          'Username of test expected'
-        )
-        assert(
-          result.body.user.password === undefined,
-          'Password expected to be omited'
-        )
-        assert.property(result.body, 'token', 'Token property exists.')
+        assert(false, 'Unexpected result')
       } catch (err) {
-        console.log(
-          'Error authenticating test user: ' + JSON.stringify(err, null, 2)
-        )
-        throw err
+        // console.log('err', err)
+        assert.equal(err.response.status, 422)
+        assert.include(err.response.data, "Property 'email' must be a string")
       }
+    })
+
+    it('should reject signup if email property provided in wrong format', async () => {
+      try {
+        const options = {
+          method: 'POST',
+          url: `${LOCALHOST}/users`,
+          data: {
+            user: {
+              email: 'badEmailFormat',
+              password: 'test'
+            }
+          }
+        }
+        await axios(options)
+
+        assert(false, 'Unexpected result')
+      } catch (err) {
+        assert.equal(err.response.status, 422)
+        assert.include(
+          err.response.data,
+          "Property 'email' must be email format"
+        )
+      }
+    })
+
+    it('should reject signup if no password property is provided', async () => {
+      try {
+        const options = {
+          method: 'POST',
+          url: `${LOCALHOST}/users`,
+          data: {
+            user: {
+              email: 'test2@test.com'
+            }
+          }
+        }
+        await axios(options)
+
+        assert(false, 'Unexpected result')
+      } catch (err) {
+        assert.equal(err.response.status, 422)
+        assert.include(
+          err.response.data,
+          "Property 'password' must be a string"
+        )
+      }
+    })
+
+    it("should signup of type 'user' by default", async () => {
+      const options = {
+        method: 'post',
+        url: `${LOCALHOST}/users`,
+        data: {
+          user: {
+            email: 'test3@test.com',
+            password: 'supersecretpassword'
+          }
+        }
+      }
+      const result = await axios(options)
+      // console.log(`result: ${JSON.stringify(result, null, 2)}`)
+
+      context.user = result.data.user
+      context.token = result.data.token
+
+      assert(result.status === 200, 'Status Code 200 expected.')
+      assert(
+        result.data.user.email === 'test3@test.com',
+        'Email of test expected'
+      )
+      assert(
+        result.data.user.password === undefined,
+        'Password expected to be omited'
+      )
+      assert.property(result.data, 'token', 'Token property exists.')
+      assert.equal(result.data.user.type, 'user')
     })
   })
 
@@ -110,19 +164,16 @@ describe('Users', () => {
       try {
         const options = {
           method: 'GET',
-          uri: `${LOCALHOST}/users`,
-          resolveWithFullResponse: true,
-          json: true,
+          url: `${LOCALHOST}/users`,
           headers: {
             Accept: 'application/json'
           }
         }
-
-        await rp(options)
+        await axios(options)
 
         assert.equal(true, false, 'Unexpected behavior')
       } catch (err) {
-        assert.equal(err.statusCode, 401)
+        assert.equal(err.response.status, 401)
       }
     })
 
@@ -130,19 +181,17 @@ describe('Users', () => {
       try {
         const options = {
           method: 'GET',
-          uri: `${LOCALHOST}/users`,
-          resolveWithFullResponse: true,
-          json: true,
+          url: `${LOCALHOST}/users`,
           headers: {
             Accept: 'application/json',
             Authorization: '1'
           }
         }
+        await axios(options)
 
-        await rp(options)
         assert.equal(true, false, 'Unexpected behavior')
       } catch (err) {
-        assert.equal(err.statusCode, 401)
+        assert.equal(err.response.status, 401)
       }
     })
 
@@ -151,19 +200,17 @@ describe('Users', () => {
       try {
         const options = {
           method: 'GET',
-          uri: `${LOCALHOST}/users`,
-          resolveWithFullResponse: true,
-          json: true,
+          url: `${LOCALHOST}/users`,
           headers: {
             Accept: 'application/json',
             Authorization: `Unknown ${token}`
           }
         }
+        await axios(options)
 
-        await rp(options)
         assert.equal(true, false, 'Unexpected behavior')
       } catch (err) {
-        assert.equal(err.statusCode, 401)
+        assert.equal(err.response.status, 401)
       }
     })
 
@@ -171,19 +218,17 @@ describe('Users', () => {
       try {
         const options = {
           method: 'GET',
-          uri: `${LOCALHOST}/users`,
-          resolveWithFullResponse: true,
-          json: true,
+          url: `${LOCALHOST}/users`,
           headers: {
             Accept: 'application/json',
-            Authorization: `Bearer 1`
+            Authorization: 'Bearer 1'
           }
         }
+        await axios(options)
 
-        await rp(options)
         assert.equal(true, false, 'Unexpected behavior')
       } catch (err) {
-        assert.equal(err.statusCode, 401)
+        assert.equal(err.response.status, 401)
       }
     })
 
@@ -192,20 +237,18 @@ describe('Users', () => {
 
       const options = {
         method: 'GET',
-        uri: `${LOCALHOST}/users`,
-        resolveWithFullResponse: true,
-        json: true,
+        url: `${LOCALHOST}/users`,
         headers: {
           Accept: 'application/json',
           Authorization: `Bearer ${token}`
         }
       }
+      const result = await axios(options)
 
-      const result = await rp(options)
-      const users = result.body.users
+      const users = result.data.users
       // console.log(`users: ${util.inspect(users)}`)
 
-      assert.hasAnyKeys(users[0], ['type', '_id', 'username'])
+      assert.hasAnyKeys(users[0], ['type', '_id', 'email'])
       assert.isNumber(users.length)
     })
   })
@@ -215,19 +258,17 @@ describe('Users', () => {
       try {
         const options = {
           method: 'GET',
-          uri: `${LOCALHOST}/users/1`,
-          resolveWithFullResponse: true,
-          json: true,
+          url: `${LOCALHOST}/users/1`,
           headers: {
             Accept: 'application/json',
-            Authorization: `Bearer 1`
+            Authorization: 'Bearer 1'
           }
         }
+        await axios(options)
 
-        await rp(options)
         assert.equal(true, false, 'Unexpected behavior')
       } catch (err) {
-        assert.equal(err.statusCode, 401)
+        assert.equal(err.response.status, 401)
       }
     })
 
@@ -237,45 +278,43 @@ describe('Users', () => {
       try {
         const options = {
           method: 'GET',
-          uri: `${LOCALHOST}/users/1`,
-          resolveWithFullResponse: true,
-          json: true,
+          url: `${LOCALHOST}/users/1`,
           headers: {
             Accept: 'application/json',
             Authorization: `Bearer ${token}`
           }
         }
 
-        await rp(options)
+        await axios(options)
         assert.equal(true, false, 'Unexpected behavior')
       } catch (err) {
-        assert.equal(err.statusCode, 404)
+        assert.equal(err.response.status, 404)
       }
     })
 
-    it('should fetch user', async () => {
-      const {
-        user: { _id },
-        token
-      } = context
+    it('should fetch own user', async () => {
+      const _id = context.user._id
+      const token = context.token
 
       const options = {
         method: 'GET',
-        uri: `${LOCALHOST}/users/${_id}`,
-        resolveWithFullResponse: true,
-        json: true,
+        url: `${LOCALHOST}/users/${_id}`,
         headers: {
           Accept: 'application/json',
           Authorization: `Bearer ${token}`
         }
       }
+      const result = await axios(options)
 
-      const result = await rp(options)
-      const user = result.body.user
+      const user = result.data.user
       // console.log(`user: ${util.inspect(user)}`)
 
-      assert.hasAnyKeys(user, ['type', '_id', 'username'])
+      assert.property(user, 'type')
+      assert.property(user, 'email')
+
+      assert.property(user, '_id')
       assert.equal(user._id, _id)
+
       assert.notProperty(
         user,
         'password',
@@ -289,19 +328,17 @@ describe('Users', () => {
       try {
         const options = {
           method: 'PUT',
-          uri: `${LOCALHOST}/users/1`,
-          resolveWithFullResponse: true,
-          json: true,
+          url: `${LOCALHOST}/users/1`,
           headers: {
             Accept: 'application/json',
-            Authorization: `Bearer 1`
+            Authorization: 'Bearer 1'
           }
         }
+        await axios(options)
 
-        await rp(options)
         assert.equal(true, false, 'Unexpected behavior')
       } catch (err) {
-        assert.equal(err.statusCode, 401)
+        assert.equal(err.response.status, 401)
       }
     })
 
@@ -311,84 +348,122 @@ describe('Users', () => {
       try {
         const options = {
           method: 'PUT',
-          uri: `${LOCALHOST}/users/1`,
-          resolveWithFullResponse: true,
-          json: true,
+          url: `${LOCALHOST}/users/1`,
           headers: {
             Accept: 'application/json',
             Authorization: `Bearer ${token}`
           }
         }
+        await axios(options)
 
-        await rp(options)
         assert.equal(true, false, 'Unexpected behavior')
       } catch (err) {
-        assert.equal(err.statusCode, 401)
+        assert.equal(err.response.status, 401)
       }
     })
 
-    it('should update user', async () => {
-      const {
-        user: { _id },
-        token
-      } = context
+    it('should update user with minimum inputs', async () => {
+      const _id = context.user._id
+      const token = context.token
 
       const options = {
         method: 'PUT',
-        uri: `${LOCALHOST}/users/${_id}`,
-        resolveWithFullResponse: true,
-        json: true,
+        url: `${LOCALHOST}/users/${_id}`,
         headers: {
           Accept: 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: {
-          user: { username: 'updatedcoolname' }
+        data: {
+          user: { email: 'testToUpdate@test.com' }
         }
       }
 
-      const result = await rp(options)
-      const user = result.body.user
+      const result = await axios(options)
+      const user = result.data.user
       // console.log(`user: ${util.inspect(user)}`)
 
-      assert.hasAnyKeys(user, ['type', '_id', 'username'])
+      assert.property(user, 'type')
+      assert.property(user, 'email')
+
+      assert.property(user, '_id')
+      assert.equal(user._id, _id)
+
+      assert.notProperty(
+        user,
+        'password',
+        'Password property should not be returned'
+      )
+      assert.equal(user.email, 'testToUpdate@test.com')
+    })
+
+    it('should update user with all inputs', async () => {
+      const _id = context.user._id
+      const token = context.token
+
+      const options = {
+        method: 'PUT',
+        url: `${LOCALHOST}/users/${_id}`,
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        data: {
+          user: {
+            email: 'testToUpdate@test.com',
+            name: 'my name',
+            username: 'myUsername'
+          }
+        }
+      }
+      const result = await axios(options)
+
+      const user = result.data.user
+      // console.log(`user: ${util.inspect(user)}`)
+
+      assert.property(user, 'type')
+      assert.property(user, 'email')
+      assert.property(user, 'name')
+
+      assert.property(user, '_id')
       assert.equal(user._id, _id)
       assert.notProperty(
         user,
         'password',
         'Password property should not be returned'
       )
-      assert.equal(user.username, 'updatedcoolname')
+      assert.equal(user.name, 'my name')
+      assert.equal(user.email, 'testToUpdate@test.com')
+      assert.equal(user.username, 'myUsername')
     })
 
     it('should not be able to update user type', async () => {
       try {
         const options = {
           method: 'PUT',
-          uri: `${LOCALHOST}/users/${context.user._id.toString()}`,
-          resolveWithFullResponse: true,
-          json: true,
+          url: `${LOCALHOST}/users/${context.user._id.toString()}`,
           headers: {
             Authorization: `Bearer ${context.token}`
           },
-          body: {
+          data: {
             user: {
               name: 'new name',
               type: 'test'
             }
           }
         }
+        const result = await axios(options)
 
-        let result = await rp(options)
+        console.log(`Users: ${JSON.stringify(result.data, null, 2)}`)
 
-        // console.log(`Users: ${JSON.stringify(result, null, 2)}`)
-
-        assert(result.statusCode === 200, 'Status Code 200 expected.')
-        assert(result.body.user.type === 'user', 'Type should be unchanged.')
+        // assert(result.status === 200, 'Status Code 200 expected.')
+        // assert(result.data.user.type === 'user', 'Type should be unchanged.')
+        assert.equal(true, false, 'Unexpected behavior')
       } catch (err) {
-        console.error('Error: ', err)
-        console.log('Error stringified: ' + JSON.stringify(err, null, 2))
-        throw err
+        assert.equal(err.response.status, 422)
+        assert.include(
+          err.response.data,
+          "Property 'type' can only be changed by Admin user"
+        )
       }
     })
 
@@ -396,31 +471,23 @@ describe('Users', () => {
       try {
         const options = {
           method: 'PUT',
-          uri: `${LOCALHOST}/users/${context.user2._id.toString()}`,
-          resolveWithFullResponse: true,
-          json: true,
+          url: `${LOCALHOST}/users/${context.user2._id.toString()}`,
           headers: {
             Authorization: `Bearer ${context.token}`
           },
-          body: {
+          data: {
             user: {
               name: 'This should not work'
             }
           }
         }
+        const result = await axios(options)
 
-        let result = await rp(options)
+        console.log(`result: ${JSON.stringify(result.data, null, 2)}`)
 
-        console.log(`result stringified: ${JSON.stringify(result, null, 2)}`)
         assert(false, 'Unexpected result')
       } catch (err) {
-        if (err.statusCode === 401) {
-          assert(err.statusCode === 401, 'Error code 401 expected.')
-        } else {
-          console.error('Error: ', err)
-          console.log('Error stringified: ' + JSON.stringify(err, null, 2))
-          throw err
-        }
+        assert.equal(err.response.status, 401)
       }
     })
 
@@ -429,24 +496,72 @@ describe('Users', () => {
 
       const options = {
         method: 'PUT',
-        uri: `${LOCALHOST}/users/${context.user2._id.toString()}`,
-        resolveWithFullResponse: true,
-        json: true,
+        url: `${LOCALHOST}/users/${context.user2._id.toString()}`,
         headers: {
           Authorization: `Bearer ${adminJWT}`
         },
-        body: {
+        data: {
           user: {
             name: 'This should work'
           }
         }
       }
-
-      let result = await rp(options)
+      const result = await axios(options)
       // console.log(`result stringified: ${JSON.stringify(result, null, 2)}`)
 
-      const userName = result.body.user.name
+      const userName = result.data.user.name
       assert.equal(userName, 'This should work')
+    })
+
+    it('should not be able to update if name property is wrong', async () => {
+      try {
+        const _id = context.user._id
+        const token = context.token
+
+        const options = {
+          method: 'PUT',
+          url: `${LOCALHOST}/users/${_id}`,
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          data: {
+            user: {
+              email: 'testToUpdate@test.com',
+              name: {}
+            }
+          }
+        }
+        await axios(options)
+      } catch (error) {
+        assert.equal(error.response.status, 422)
+        assert.include(error.response.data, "Property 'name' must be a string!")
+      }
+    })
+
+    it('should not be able to update if email is wrong format', async () => {
+      try {
+        const _id = context.user._id
+        const token = context.token
+
+        const options = {
+          method: 'PUT',
+          url: `${LOCALHOST}/users/${_id}`,
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          data: {
+            user: {
+              email: 'badEmailFormat'
+            }
+          }
+        }
+        await axios(options)
+      } catch (err) {
+        assert.equal(err.response.status, 422)
+        assert.include(err.response.data, 'not a valid Email format')
+      }
     })
   })
 
@@ -455,41 +570,37 @@ describe('Users', () => {
       try {
         const options = {
           method: 'DELETE',
-          uri: `${LOCALHOST}/users/1`,
-          resolveWithFullResponse: true,
-          json: true,
+          url: `${LOCALHOST}/users/1`,
           headers: {
             Accept: 'application/json',
-            Authorization: `Bearer 1`
+            Authorization: 'Bearer 1'
           }
         }
+        await axios(options)
 
-        await rp(options)
         assert.equal(true, false, 'Unexpected behavior')
       } catch (err) {
-        assert.equal(err.statusCode, 401)
+        assert.equal(err.response.status, 401)
       }
     })
 
-    it('should throw 401 if deleting other user', async () => {
+    it('should throw 401 if deleting invalid user', async () => {
       const { token } = context
 
       try {
         const options = {
           method: 'DELETE',
-          uri: `${LOCALHOST}/users/1`,
-          resolveWithFullResponse: true,
-          json: true,
+          url: `${LOCALHOST}/users/1`,
           headers: {
             Accept: 'application/json',
             Authorization: `Bearer ${token}`
           }
         }
+        await axios(options)
 
-        await rp(options)
         assert.equal(true, false, 'Unexpected behavior')
       } catch (err) {
-        assert.equal(err.statusCode, 401)
+        assert.equal(err.response.status, 401)
       }
     })
 
@@ -497,50 +608,33 @@ describe('Users', () => {
       try {
         const options = {
           method: 'DELETE',
-          uri: `${LOCALHOST}/users/${context.user2._id.toString()}`,
-          resolveWithFullResponse: true,
-          json: true,
+          url: `${LOCALHOST}/users/${context.user2._id.toString()}`,
           headers: {
             Authorization: `Bearer ${context.token}`
           }
         }
-
-        let result = await rp(options)
-
-        console.log(`result stringified: ${JSON.stringify(result, null, 2)}`)
-        assert(false, 'Unexpected result')
+        await axios(options)
       } catch (err) {
-        if (err.statusCode === 401) {
-          assert(err.statusCode === 401, 'Error code 401 expected.')
-        } else {
-          console.error('Error: ', err)
-          console.log('Error stringified: ' + JSON.stringify(err, null, 2))
-          throw err
-        }
+        assert.equal(err.response.status, 401)
       }
     })
 
     it('should delete own user', async () => {
-      const {
-        user: { _id },
-        token
-      } = context
+      const _id = context.user._id
+      const token = context.token
 
       const options = {
         method: 'DELETE',
-        uri: `${LOCALHOST}/users/${_id}`,
-        resolveWithFullResponse: true,
-        json: true,
+        url: `${LOCALHOST}/users/${_id}`,
         headers: {
           Accept: 'application/json',
           Authorization: `Bearer ${token}`
         }
       }
+      const result = await axios(options)
+      // console.log(`result: ${util.inspect(result.data.success)}`)
 
-      const result = await rp(options)
-      // console.log(`result: ${util.inspect(result.body)}`)
-
-      assert.equal(result.body.success, true)
+      assert.equal(result.data.success, true)
     })
 
     it('should be able to delete other users when admin', async () => {
@@ -549,19 +643,16 @@ describe('Users', () => {
 
       const options = {
         method: 'DELETE',
-        uri: `${LOCALHOST}/users/${id}`,
-        resolveWithFullResponse: true,
-        json: true,
+        url: `${LOCALHOST}/users/${id}`,
         headers: {
           Accept: 'application/json',
           Authorization: `Bearer ${adminJWT}`
         }
       }
+      const result = await axios(options)
+      // console.log(`result: ${util.inspect(result.data)}`)
 
-      const result = await rp(options)
-      // console.log(`result: ${util.inspect(result.body)}`)
-
-      assert.equal(result.body.success, true)
+      assert.equal(result.data.success, true)
     })
   })
 })
