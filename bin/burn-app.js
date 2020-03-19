@@ -6,7 +6,7 @@ const config = require('../config')
 const BCHJS = require('@chris.troutner/bch-js')
 let bchjs = new BCHJS()
 if (config.network === 'testnet') {
-  bchjs = new BCHJS({ restURL: 'http://tapi.bchjs.cash/v3/' })
+  bchjs = new BCHJS({ restURL: 'http://tapi.fullstack.cash/v3/' })
 }
 
 const BCH = require('../src/lib/bch')
