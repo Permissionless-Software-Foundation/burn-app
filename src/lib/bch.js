@@ -7,7 +7,7 @@ const config = require('../../config')
 const BCHJS = require('@chris.troutner/bch-js')
 let bchjs = new BCHJS()
 if (config.network === 'testnet') {
-  bchjs = new BCHJS({ restURL: 'http://tapi.bchjs.cash/v3/' })
+  bchjs = new BCHJS({ restURL: config.bchServer })
 }
 
 const AppUtils = require('./util')
@@ -61,6 +61,7 @@ class BCH {
 
         originalAmount = originalAmount + utxo.satoshis
 
+        // Validate UTXO with full node.
         const txout = await this.bchjs.Blockchain.getTxOut(utxo.txid, utxo.vout)
         if (txout === null) {
           throw new Error(`stale utxo detected.`)
@@ -140,7 +141,7 @@ class BCH {
 
       return hex
     } catch (err) {
-      console.error(`Error in bch.js/sendAll()`)
+      wlogger.error(`Error in bch.js/sendAll()`)
       throw err
     }
   }

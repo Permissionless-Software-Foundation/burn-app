@@ -15,9 +15,11 @@ const config = {
 if (config.network === 'testnet') {
   config.tokenLiquidityAddr =
     'bchtest:qpz5hez3qmzrnjzdfu03tf7fp6ca0rlsaqvrxmfpyd'
+  config.bchServer = 'htts://tapi.fullstack.cash/v3/'
 } else {
   config.tokenLiquidityAddr =
     'bitcoincash:qzl6k0wvdd5ky99hewghqdgfj2jhcpqnfq8xtct0al'
+  config.bchServer = 'http://api.fullstack.cash/v3/'
 }
 
 module.exports = config
