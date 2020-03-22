@@ -67,6 +67,7 @@ class TLUtils {
     try {
       let walletInfo
 
+      // console.log(`config.network: ${config.network}`)
       if (config.network === 'testnet') {
         walletInfo = require(`${__dirname}/../../wallet-test.json`)
       } else {
