@@ -44,11 +44,11 @@ class BCH {
 
       // if (!Array.isArray(utxos)) throw new Error(`utxos must be an array.`)
 
-      if (utxos.length === 0) throw new Error(`No utxos found.`)
+      if (utxos.length === 0) throw new Error('No utxos found.')
 
       // instance of transaction builder
       let transactionBuilder
-      if (config.network === `testnet`) {
+      if (config.network === 'testnet') {
         transactionBuilder = new this.bchjs.TransactionBuilder('testnet')
       } else transactionBuilder = new this.bchjs.TransactionBuilder()
 
@@ -64,14 +64,14 @@ class BCH {
         // Validate UTXO with full node.
         const txout = await this.bchjs.Blockchain.getTxOut(utxo.txid, utxo.vout)
         if (txout === null) {
-          throw new Error(`stale utxo detected.`)
+          throw new Error('stale utxo detected.')
         }
 
         transactionBuilder.addInput(utxo.txid, utxo.vout)
       }
 
       if (originalAmount < 1) {
-        throw new Error(`Original amount is zero. No BCH to send.`)
+        throw new Error('Original amount is zero. No BCH to send.')
       }
 
       // original amount of satoshis in vin
@@ -89,7 +89,7 @@ class BCH {
       const script = [
         this.bchjs.Script.opcodes.OP_RETURN,
         Buffer.from('6d02', 'hex'), // Makes message comply with the memo.cash protocol.
-        Buffer.from(`BURN`)
+        Buffer.from('BURN')
       ]
 
       // Compile the script array into a bitcoin-compliant hex encoded string.
@@ -115,6 +115,8 @@ class BCH {
 
       let redeemScript
 
+      let totalSats = 0
+
       // Loop through each input and sign
       for (let i = 0; i < utxos.length; i++) {
         const utxo = utxos[i]
@@ -130,6 +132,13 @@ class BCH {
           transactionBuilder.hashTypes.SIGHASH_ALL,
           utxo.satoshis
         )
+
+        // Total up the output.
+        totalSats += utxo.satoshis
+      }
+
+      if (totalSats < 546) {
+        throw new Error(`Total output is ${totalSats} satoshis, which is less than the dust amount of 546.`)
       }
 
       // build tx
@@ -141,7 +150,7 @@ class BCH {
 
       return hex
     } catch (err) {
-      wlogger.error(`Error in bch.js/sendAll()`)
+      wlogger.error('Error in bch.js/sendAll()')
       throw err
     }
   }
@@ -164,18 +173,18 @@ class BCH {
       // console.log(`derivation path: m/44'/${walletInfo.derivation}'/0'`)
       const account = this.bchjs.HDNode.derivePath(
         masterHDNode,
-        `m/44'/145'/0'`
+        'm/44\'/145\'/0\''
       )
 
       // derive the first external change address HDNode which is going to spend utxo
-      const change = this.bchjs.HDNode.derivePath(account, `0/0`)
+      const change = this.bchjs.HDNode.derivePath(account, '0/0')
 
       const addr = this.bchjs.HDNode.toCashAddress(change)
       console.log(`addr: ${addr}`)
 
       return change
     } catch (err) {
-      console.log(`Error in bchjs.js/changeAddrFromMnemonic()`)
+      console.log('Error in bchjs.js/changeAddrFromMnemonic()')
       throw err
     }
   }
@@ -189,7 +198,7 @@ class BCH {
 
       return txid
     } catch (err) {
-      console.log(`Error in bchjs.js/broadcastTx()`)
+      console.log('Error in bchjs.js/broadcastTx()')
       throw err
     }
   }
