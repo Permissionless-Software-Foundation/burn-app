@@ -16,7 +16,7 @@ const AppUtils = require('../src/lib/util')
 const appUtils = new AppUtils()
 
 const LOOP_INTERVAL = 60000 * 0.5
-const BALANCE_THRESHOLD = 0.0001
+const BALANCE_THRESHOLD = 10000 // Satoshis
 
 let _this
 
@@ -55,7 +55,7 @@ class BurnApp {
       console.log(`balance: ${JSON.stringify(balance, null, 2)}`)
 
       if (balance > BALANCE_THRESHOLD) {
-        console.log(`Forwarding balance to token-liquidity app.`)
+        console.log('Forwarding balance to token-liquidity app.')
         try {
           const hex = await _this.bch.sendAll()
 
@@ -66,7 +66,7 @@ class BurnApp {
         }
       }
     } catch (err) {
-      console.error(`Error in checkBalance: `, err)
+      console.error('Error in checkBalance: ', err)
     }
   }
 }
