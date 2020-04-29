@@ -34,7 +34,7 @@ class BCH {
       const utxos = await _this.bchjs.Blockbook.utxo(
         _this.walletInfo.cashAddress
       )
-      console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`)
+      wlogger.info(`utxos: ${JSON.stringify(utxos, null, 2)}`)
 
       if (utxos.length === 0) throw new Error('No UTXOs found.')
 
@@ -103,9 +103,9 @@ class BCH {
       console.log(`sendAmount: ${sendAmount}`)
 
       console.log(`sendToAddr: ${sendToAddr}`)
-      console.log(
-        `sendToAddr: ${this.bchjs.Address.toLegacyAddress(sendToAddr)}`
-      )
+      // console.log(
+      //   `sendToAddr: ${this.bchjs.Address.toLegacyAddress(sendToAddr)}`
+      // )
 
       // add output w/ address and amount to send
       transactionBuilder.addOutput(
@@ -179,8 +179,8 @@ class BCH {
       // derive the first external change address HDNode which is going to spend utxo
       const change = this.bchjs.HDNode.derivePath(account, '0/0')
 
-      const addr = this.bchjs.HDNode.toCashAddress(change)
-      console.log(`addr: ${addr}`)
+      // const addr = this.bchjs.HDNode.toCashAddress(change)
+      // console.log(`addr: ${addr}`)
 
       return change
     } catch (err) {
