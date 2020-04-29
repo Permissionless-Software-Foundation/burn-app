@@ -2,6 +2,7 @@
  */
 
 const config = require('../config')
+const wlogger = require('../src/lib/wlogger')
 
 const BCHJS = require('@chris.troutner/bch-js')
 let bchjs = new BCHJS()
@@ -16,7 +17,8 @@ const AppUtils = require('../src/lib/util')
 const appUtils = new AppUtils()
 
 const LOOP_INTERVAL = 60000 * 0.5
-const BALANCE_THRESHOLD = 10000 // Satoshis
+// const BALANCE_THRESHOLD = 10000 // Satoshis
+const BALANCE_THRESHOLD = 1000 // Satoshis
 
 let _this
 
@@ -52,15 +54,19 @@ class BurnApp {
       )
 
       balance = Number(balance.balance) + Number(balance.unconfirmedBalance)
-      console.log(`balance: ${JSON.stringify(balance, null, 2)}`)
+      if (balance > 0) {
+        console.log(`balance: ${JSON.stringify(balance, null, 2)}`)
+      }
 
       if (balance > BALANCE_THRESHOLD) {
-        console.log('Forwarding balance to token-liquidity app.')
+        wlogger.info(
+          `Forwarding balance of ${balance} satoshis to token-liquidity app.`
+        )
         try {
           const hex = await _this.bch.sendAll()
 
           const txid = await _this.bch.broadcastTx(hex)
-          console.log(`txid: ${txid}`)
+          wlogger.info(`txid: ${txid}`)
         } catch (err) {
           console.log(`Error encountered: ${err.message}`)
         }
