@@ -65,4 +65,7 @@ system-user-*.json
 
 wallet-test.json
 wallet-main.json
+
+burn-app.sh
+
 !README.md
