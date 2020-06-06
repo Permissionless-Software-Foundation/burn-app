@@ -5,10 +5,6 @@
 const config = require('../../config')
 
 const BCHJS = require('@chris.troutner/bch-js')
-let bchjs = new BCHJS()
-if (config.network === 'testnet') {
-  bchjs = new BCHJS({ restURL: config.bchServer })
-}
 
 const AppUtils = require('./util')
 const appUtils = new AppUtils()
@@ -21,7 +17,11 @@ class BCH {
   constructor () {
     _this = this
 
-    this.bchjs = bchjs
+    if (config.network === 'testnet') {
+      this.bchjs = new BCHJS({ restURL: config.bchServer })
+    } else {
+      this.bchjs = new BCHJS()
+    }
 
     this.appUtils = appUtils
     this.walletInfo = this.appUtils.openWallet()
