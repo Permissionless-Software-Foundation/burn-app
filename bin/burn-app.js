@@ -20,9 +20,9 @@ const BCH = require('../src/lib/bch')
 const AppUtils = require('../src/lib/util')
 const appUtils = new AppUtils()
 
-const LOOP_INTERVAL = 60000 * 0.5
+const LOOP_INTERVAL = 60000 * 5
 // const BALANCE_THRESHOLD = 10000 // Satoshis
-const BALANCE_THRESHOLD = 1000 // Satoshis
+const BALANCE_THRESHOLD = 100000 // Satoshis
 
 let _this
 
