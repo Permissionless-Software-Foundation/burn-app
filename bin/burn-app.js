@@ -79,7 +79,7 @@ class BurnApp {
           const txid = await _this.bch.broadcastTx(hex)
           wlogger.info(`txid: ${txid}`)
         } catch (err) {
-          console.log(`Error encountered: ${err.message}`)
+          console.log('Error encountered: ', err)
           wlogger.error('Error in checkBalance: ', err)
         }
       }
