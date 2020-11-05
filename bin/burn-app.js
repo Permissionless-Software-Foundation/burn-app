@@ -80,6 +80,7 @@ class BurnApp {
           wlogger.info(`txid: ${txid}`)
         } catch (err) {
           console.log(`Error encountered: ${err.message}`)
+          wlogger.error('Error in checkBalance: ', err)
         }
       }
     } catch (err) {
