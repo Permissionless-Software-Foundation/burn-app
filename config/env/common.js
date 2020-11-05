@@ -8,7 +8,11 @@ const config = {
   network: process.env.NETWORK ? process.env.NETWORK : 'testnet',
   // tokenLiquidityAddr: 'bitcoincash:qzl6k0wvdd5ky99hewghqdgfj2jhcpqnfq8xtct0al',
   // tokenLiquidityAddr: 'bchtest:qpz5hez3qmzrnjzdfu03tf7fp6ca0rlsaqvrxmfpyd',
-  logPass: 'test'
+  logPass: 'test',
+
+  emailServer: process.env.EMAILSERVER ? process.env.EMAILSERVER : 'mail.someserver.com',
+  emailUser: process.env.EMAILUSER ? process.env.EMAILUSER : 'noreply@someserver.com',
+  emailPassword: process.env.EMAILPASS ? process.env.EMAILPASS : 'emailpassword'
 }
 
 // console.log(`config.network: ${config.network}`)
