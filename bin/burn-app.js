@@ -69,7 +69,12 @@ class BurnApp {
         console.log(`balance: ${JSON.stringify(balance, null, 2)}`)
       }
 
-      if (balance > BALANCE_THRESHOLD) {
+      // Create Boolean decisions about the state of the apps wallet.
+      const balanceExceedsThreshold = balance > BALANCE_THRESHOLD
+      const numUtxos = await _this.bch.getUtxoCount()
+      const utxosExceedThreshold = numUtxos > 50
+
+      if (balanceExceedsThreshold || utxosExceedThreshold) {
         wlogger.info(
           `Forwarding balance of ${balance} satoshis to token-liquidity app.`
         )

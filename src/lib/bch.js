@@ -27,6 +27,22 @@ class BCH {
     this.walletInfo = this.appUtils.openWallet()
   }
 
+  // Returns the number of UTXOs associated with the apps wallet.
+  async getUtxoCount () {
+    try {
+      // const utxos = await _this.getAllUtxos()
+      const utxos = await _this.bchjs.Blockbook.utxo(
+        _this.walletInfo.cashAddress
+      )
+      // wlogger.info(`utxos: ${JSON.stringify(utxos, null, 2)}`)
+
+      return utxos.length
+    } catch (err) {
+      wlogger.error('Error in bch.js/getUtxoCount()')
+      throw err
+    }
+  }
+
   // Send the balance of the wallet to the token-liquidity app to burn tokens.
   async sendAll (inObj) {
     try {
