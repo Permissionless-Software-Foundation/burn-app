@@ -22,7 +22,7 @@ if (config.network === 'testnet') {
   config.bchServer = 'htts://tapi.fullstack.cash/v3/'
 } else {
   config.tokenLiquidityAddr =
-    'bitcoincash:qzl6k0wvdd5ky99hewghqdgfj2jhcpqnfq8xtct0al'
+    'bitcoincash:qrnn49rx0p4xh78tts79utf0zv26vyru6vqtl9trd3'
   config.bchServer = 'http://api.fullstack.cash/v3/'
 }
 
