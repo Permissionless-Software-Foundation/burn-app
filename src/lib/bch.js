@@ -4,7 +4,7 @@
 
 const config = require('../../config')
 
-const BCHJS = require('@chris.troutner/bch-js')
+const BCHJS = require('@psf/bch-js')
 
 const AppUtils = require('./util')
 const appUtils = new AppUtils()

@@ -27,7 +27,7 @@ class TLUtils {
     try {
       wlogger.silly('entering util.js/saveState().')
 
-      const filename = `${__dirname}/../../state/state.json`
+      const filename = `${__dirname.toString()}/../../state/state.json`
 
       return new Promise((resolve, reject) => {
         fs.writeFile(filename, JSON.stringify(data, null, 2), function (err) {
@@ -69,9 +69,9 @@ class TLUtils {
 
       // console.log(`config.network: ${config.network}`)
       if (config.network === 'testnet') {
-        walletInfo = require(`${__dirname}/../../wallet-test.json`)
+        walletInfo = require(`${__dirname.toString()}/../../wallet-test.json`)
       } else {
-        walletInfo = require(`${__dirname}/../../wallet-main.json`)
+        walletInfo = require(`${__dirname.toString()}/../../wallet-main.json`)
       }
       // console.log(`walletInfo in slp: ${JSON.stringify(walletInfo, null, 2)}`)
 
