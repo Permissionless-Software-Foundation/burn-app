@@ -16,7 +16,7 @@ It makes the following modifications:
 - Replaced `bcrypt` dependency with `bcryptjs`. This improves compatibility across
   versions of node.js and across OSs.
 
-- Configured for Travis CI (continuous integration), Coveralls (code coverage), Green Keeper (automated dependency management), and Semantic Release (automated versioning).
+- Configured for Jenkins (continuous integration), Coveralls (code coverage), Green Keeper (automated dependency management), and Semantic Release (automated versioning).
 
 - 'Production' environment is targeted for packaging as a Docker container.
 
@@ -26,6 +26,8 @@ commands like updating and deleting other users.
 
  - Winston logging integrated for daily rotated logs and a maximum size of
  1 megabyte.
+
+ - Linting enforced with [Husky](https://github.com/typicode/husky) and [JavaScript Standard Style rules](https://www.npmjs.com/package/standard).
 
 ## Features
 This project covers basic necessities of most APIs.
@@ -112,3 +114,5 @@ v2.3.0 uploaded to IPFS:
 
 ## License
 MIT
+
+test
