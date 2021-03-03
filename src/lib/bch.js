@@ -31,9 +31,13 @@ class BCH {
   async getUtxoCount () {
     try {
       // const utxos = await _this.getAllUtxos()
-      const utxos = await _this.bchjs.Blockbook.utxo(
+      // const utxos = await _this.bchjs.Blockbook.utxo(
+      //   _this.walletInfo.cashAddress
+      // )
+      const utxoData = await _this.bchjs.Electrumx.utxo(
         _this.walletInfo.cashAddress
       )
+      const utxos = utxoData.utxos
       // wlogger.info(`utxos: ${JSON.stringify(utxos, null, 2)}`)
 
       return utxos.length
@@ -47,9 +51,13 @@ class BCH {
   async sendAll (inObj) {
     try {
       // const utxos = await _this.getAllUtxos()
-      const utxos = await _this.bchjs.Blockbook.utxo(
+      // const utxos = await _this.bchjs.Blockbook.utxo(
+      //   _this.walletInfo.cashAddress
+      // )
+      const utxoData = await _this.bchjs.Electrumx.utxo(
         _this.walletInfo.cashAddress
       )
+      const utxos = utxoData.utxos
       wlogger.info(`utxos: ${JSON.stringify(utxos, null, 2)}`)
 
       if (utxos.length === 0) throw new Error('No UTXOs found.')
@@ -75,15 +83,15 @@ class BCH {
       for (let i = 0; i < utxos.length; i++) {
         const utxo = utxos[i]
 
-        originalAmount = originalAmount + utxo.satoshis
+        originalAmount = originalAmount + utxo.value
 
         // Validate UTXO with full node.
-        const txout = await this.bchjs.Blockchain.getTxOut(utxo.txid, utxo.vout)
+        const txout = await this.bchjs.Blockchain.getTxOut(utxo.tx_hash, utxo.tx_pos)
         if (txout === null) {
           throw new Error('stale utxo detected.')
         }
 
-        transactionBuilder.addInput(utxo.txid, utxo.vout)
+        transactionBuilder.addInput(utxo.tx_hash, utxo.tx_pos)
       }
 
       if (originalAmount < 1) {
@@ -146,11 +154,11 @@ class BCH {
           keyPair,
           redeemScript,
           transactionBuilder.hashTypes.SIGHASH_ALL,
-          utxo.satoshis
+          utxo.value
         )
 
         // Total up the output.
-        totalSats += utxo.satoshis
+        totalSats += utxo.value
       }
 
       if (totalSats < 546) {

@@ -4,7 +4,7 @@
 const config = require('../config')
 const wlogger = require('../src/lib/wlogger')
 
-const BCHJS = require('@chris.troutner/bch-js')
+const BCHJS = require('@psf/bch-js')
 
 // Instantiate the JWT handling library for FullStack.cash.
 const JwtLib = require('jwt-bch-lib')
@@ -60,11 +60,12 @@ class BurnApp {
   // are above a threshold.
   async checkBalance () {
     try {
-      let balance = await _this.bchjs.Blockbook.balance(
-        _this.walletInfo.cashAddress
-      )
+      // let balance = await _this.bchjs.Blockbook.balance(
+      //   _this.walletInfo.cashAddress
+      // )
+      let balance = await _this.bchjs.Electrumx.balance(_this.walletInfo.cashAddress)
 
-      balance = Number(balance.balance) + Number(balance.unconfirmedBalance)
+      balance = balance.balance.confirmed + balance.balance.unconfirmed
       if (balance > 0) {
         console.log(`balance: ${JSON.stringify(balance, null, 2)}`)
       }
