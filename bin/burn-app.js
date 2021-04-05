@@ -42,7 +42,7 @@ class BurnApp {
     setInterval(async function () {
       wlogger.info('Updating FullStack.cash JWT token')
       await _this.getJwt()
-    }, 60000 * 60 * 24)
+    }, 60000 * 60) // 1 hour
     _this.getJwt()
   }
 
