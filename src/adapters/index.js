@@ -80,6 +80,16 @@ class Adapters {
 
     this.wlogger.info('FullStack JWT token refreshed and libraries updated.')
   }
+
+  // Startup any asynchronous processes needed to initialize the adapter libraries.
+  async startAdapters () {
+    try {
+      console.log('Async Adapters have been started.')
+    } catch (err) {
+      console.error('Error in adapters/index.js/startAdapters()')
+      throw err
+    }
+  }
 }
 
 module.exports = Adapters
