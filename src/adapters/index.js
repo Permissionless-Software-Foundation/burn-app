@@ -13,6 +13,7 @@ const wlogger = require('./wlogger')
 const JSONFiles = require('./json-files')
 const config = require('../../config')
 const FullStack = require('./fullstack-cash')
+const BCH = require('./bch')
 
 // const ONE_HOUR = 60000 * 60
 const ONE_HOUR = 60000 * 1
@@ -30,6 +31,7 @@ class Adapters {
     this.config = config
     this.wlogger = wlogger
     this.fullstack = new FullStack()
+    this.bch = new BCH()
 
     _this = this
   }
@@ -47,6 +49,8 @@ class Adapters {
         this.fullstackInterval = setInterval(this.refreshBchJS, ONE_HOUR)
 
         await this.renewBchJS(apiToken)
+
+        console.log('Async Adapters have been started.')
       }
     } catch (err) {
       console.error('Error in adapters/index.js/startAdapters()')
@@ -68,27 +72,17 @@ class Adapters {
   // token has been renewed.
   async renewBchJS (apiToken) {
     // Reinitialize wallet with the new apiToken.
-    await _this.wallet.initWallet(this.config.mnemonic, apiToken)
+    // await _this.wallet.initWallet(this.config.mnemonic, apiToken)
 
     // Extract bch-js from the wallet library.
     // const bchjs = _this.wallet.bchjs
 
     // Re-initialized support Adapters that use bch-js
-    // this.bch = new BCH({ bchjs })
+    this.bch = new BCH({ apiToken })
     // this.txs = new Transactions({ bchjs })
     // this.slp = new SLP({ wallet: _this.wallet })
 
     this.wlogger.info('FullStack JWT token refreshed and libraries updated.')
-  }
-
-  // Startup any asynchronous processes needed to initialize the adapter libraries.
-  async startAdapters () {
-    try {
-      console.log('Async Adapters have been started.')
-    } catch (err) {
-      console.error('Error in adapters/index.js/startAdapters()')
-      throw err
-    }
   }
 }
 

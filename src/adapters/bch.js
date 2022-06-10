@@ -2,28 +2,73 @@
   Library for working with BCH.
 */
 
-const config = require('../../config')
-
+// Global npm libraries
 const BCHJS = require('@psf/bch-js')
 
+// Local libraries
+const config = require('../../config')
 const AppUtils = require('./util')
-const appUtils = new AppUtils()
-
 const wlogger = require('./wlogger')
+
+// const LOOP_INTERVAL = 60000 * 5
+// const BALANCE_THRESHOLD = 10000 // Satoshis
+const BALANCE_THRESHOLD = 100000 // Satoshis
 
 let _this
 
 class BCH {
-  constructor () {
+  constructor (localConfig = {}) {
     _this = this
 
-    if (config.network === 'testnet') {
-      this.bchjs = new BCHJS({ restURL: config.bchServer })
-    } else {
-      this.bchjs = new BCHJS()
-    }
+    console.log(`Initializing BCH library with apiToken: ${localConfig.apiToken}`)
+    this.bchjs = new BCHJS({ restURL: config.bchServer, apiToken: localConfig.apiToken })
 
-    this.appUtils = appUtils
+    this.appUtils = new AppUtils()
+    // this.walletInfo = this.appUtils.openWallet()
+  }
+
+  // This is the main app biz logic that is called by a timer interval.
+  // Check the wallet balance. Forward funds in order to burn tokens, if they
+  // are above a threshold.
+  async checkBalance () {
+    try {
+      this.openWallet()
+
+      // let balance = await _this.bchjs.Blockbook.balance(
+      //   _this.walletInfo.cashAddress
+      // )
+      let balance = await _this.bchjs.Electrumx.balance(_this.walletInfo.cashAddress)
+
+      balance = balance.balance.confirmed + balance.balance.unconfirmed
+      if (balance > 0) {
+        console.log(`balance: ${JSON.stringify(balance, null, 2)}`)
+      }
+
+      // Create Boolean decisions about the state of the apps wallet.
+      const balanceExceedsThreshold = balance > BALANCE_THRESHOLD
+      const numUtxos = await _this.getUtxoCount()
+      const utxosExceedThreshold = numUtxos > 50
+
+      if (balanceExceedsThreshold || utxosExceedThreshold) {
+        wlogger.info(
+          `Forwarding balance of ${balance} satoshis to token-liquidity app.`
+        )
+        try {
+          const hex = await _this.sendAll()
+
+          const txid = await _this.broadcastTx(hex)
+          wlogger.info(`txid: ${txid}`)
+        } catch (err) {
+          console.log('Error encountered: ', err)
+          wlogger.error('Error in checkBalance: ', err)
+        }
+      }
+    } catch (err) {
+      console.error('Error in checkBalance: ', err)
+    }
+  }
+
+  openWallet () {
     this.walletInfo = this.appUtils.openWallet()
   }
 
