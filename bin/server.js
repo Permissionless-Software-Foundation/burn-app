@@ -13,11 +13,11 @@ const cors = require('kcors')
 // Local libraries
 const config = require('../config') // this first.
 
-const AdminLib = require('../src/lib/admin')
+const AdminLib = require('../src/adapters/admin')
 const adminLib = new AdminLib()
 
 const errorMiddleware = require('../src/middleware')
-const wlogger = require('../src/lib/wlogger')
+const wlogger = require('../src/adapters/wlogger')
 
 async function startServer () {
   // Create a Koa instance.
@@ -53,9 +53,10 @@ async function startServer () {
   app.use(passport.initialize())
   app.use(passport.session())
 
-  // Custom Middleware Modules
-  const modules = require('../src/modules')
-  modules(app)
+  // Attach REST API and JSON RPC controllers to the app.
+  const Controllers = require('../src/controllers')
+  const controllers = new Controllers()
+  await controllers.attachRESTControllers(app)
 
   // Enable CORS for testing
   // THIS IS A SECURITY RISK. COMMENT OUT FOR PRODUCTION
