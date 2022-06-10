@@ -11,8 +11,8 @@ const AppUtils = require('./util')
 const wlogger = require('./wlogger')
 
 // const LOOP_INTERVAL = 60000 * 5
-// const BALANCE_THRESHOLD = 10000 // Satoshis
 const BALANCE_THRESHOLD = 100000 // Satoshis
+// const BALANCE_THRESHOLD = 10000 // Satoshis
 
 let _this
 
@@ -34,9 +34,7 @@ class BCH {
     try {
       this.openWallet()
 
-      // let balance = await _this.bchjs.Blockbook.balance(
-      //   _this.walletInfo.cashAddress
-      // )
+      console.log(`_this.walletInfo.cashAddress: ${_this.walletInfo.cashAddress}`)
       let balance = await _this.bchjs.Electrumx.balance(_this.walletInfo.cashAddress)
 
       balance = balance.balance.confirmed + balance.balance.unconfirmed

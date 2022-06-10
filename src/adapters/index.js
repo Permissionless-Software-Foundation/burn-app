@@ -15,8 +15,8 @@ const config = require('../../config')
 const FullStack = require('./fullstack-cash')
 const BCH = require('./bch')
 
-// const ONE_HOUR = 60000 * 60
-const ONE_HOUR = 60000 * 1
+const ONE_HOUR = 60000 * 60
+// const ONE_HOUR = 60000 * 1
 
 let _this
 
