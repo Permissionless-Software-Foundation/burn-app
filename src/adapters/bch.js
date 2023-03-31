@@ -11,7 +11,7 @@ const AppUtils = require('./util')
 const wlogger = require('./wlogger')
 
 // const LOOP_INTERVAL = 60000 * 5
-const BALANCE_THRESHOLD = 100000 // Satoshis
+const BALANCE_THRESHOLD = 10000 // Satoshis
 // const BALANCE_THRESHOLD = 10000 // Satoshis
 
 let _this
