@@ -7,13 +7,15 @@
 'use strict'
 
 // const config = require('../../config')
-const fs = require('fs')
-
-const config = require('../../config')
-
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import config from '../../config/index.js'
 // Winston logger
-const wlogger = require('./wlogger')
+import wlogger from './wlogger.js'
 
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 class TLUtils {
   // constructor () {}
 
@@ -51,11 +53,8 @@ class TLUtils {
   // Open and read the state JSON file.
   readState (filename) {
     try {
-      // Delete the cached copy of the data.
-      delete require.cache[require.resolve(filename)]
-
-      const data = require(filename)
-      return data
+      const fileStr = fs.readFileSync(filename, 'utf8')
+      return JSON.parse(fileStr)
     } catch (err) {
       wlogger.debug('Error in util.js/readState()')
       throw new Error(`Could not open ${filename}`)
@@ -65,14 +64,15 @@ class TLUtils {
   // Opens the wallet file and returns the contents.
   openWallet () {
     try {
-      let walletInfo
+      let walletPath
 
       // console.log(`config.network: ${config.network}`)
       if (config.network === 'testnet') {
-        walletInfo = require(`${__dirname.toString()}/../../wallet-test.json`)
+        walletPath = path.join(__dirname, '../../wallet-test.json')
       } else {
-        walletInfo = require(`${__dirname.toString()}/../../wallet-main.json`)
+        walletPath = path.join(__dirname, '../../wallet-main.json')
       }
+      const walletInfo = JSON.parse(fs.readFileSync(walletPath, 'utf8'))
       // console.log(`walletInfo in slp: ${JSON.stringify(walletInfo, null, 2)}`)
 
       return walletInfo
@@ -86,4 +86,4 @@ class TLUtils {
   }
 }
 
-module.exports = TLUtils
+export default TLUtils

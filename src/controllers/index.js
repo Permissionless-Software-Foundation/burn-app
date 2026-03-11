@@ -7,17 +7,13 @@
 // Public npm libraries.
 
 // Load the Clean Architecture Adapters library
-const Adapters = require('../adapters')
-
+import Adapters from '../adapters/index.js'
 // Load the Clean Architecture Use Case libraries.
-const UseCases = require('../use-cases')
-
+import UseCases from '../use-cases/index.js'
 // Load the REST API Controllers.
-const RESTControllers = require('./rest-api')
-
+import RESTControllers from './rest-api/index.js'
 // Timer-based controllers.
-const TimerControllers = require('./timer-controllers')
-
+import TimerControllers from './timer-controllers.js'
 class Controllers {
   constructor (localConfig = {}) {
     this.adapters = new Adapters()
@@ -61,4 +57,4 @@ class Controllers {
   // }
 }
 
-module.exports = Controllers
+export default Controllers

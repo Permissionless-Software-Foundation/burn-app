@@ -4,8 +4,7 @@
 // User library for business logic.
 // const UserLib = require('../../../adapters/users')
 
-const wlogger = require('../../../adapters/wlogger')
-
+import wlogger from '../../../adapters/wlogger.js'
 let _this
 class UserRESTControllerLib {
   constructor (localConfig = {}) {
@@ -289,4 +288,4 @@ class UserRESTControllerLib {
   }
 }
 
-module.exports = UserRESTControllerLib
+export default UserRESTControllerLib

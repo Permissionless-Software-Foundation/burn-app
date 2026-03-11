@@ -3,12 +3,10 @@
 */
 
 // Global npm libraries
-const JwtLib = require('jwt-bch-lib')
-
+import JwtLib from 'jwt-bch-lib'
 // Local libraries
-const config = require('../../config')
-const wlogger = require('./wlogger')
-
+import config from '../../config/index.js'
+import wlogger from './wlogger.js'
 class FullStack {
   constructor (localConfig = {}) {
     // Encapsulate dependencies
@@ -63,4 +61,4 @@ class FullStack {
   }
 }
 
-module.exports = FullStack
+export default FullStack

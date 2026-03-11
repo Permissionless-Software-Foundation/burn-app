@@ -5,16 +5,15 @@
 */
 
 // Load individual adapter libraries.
-const LocalDB = require('./localdb')
-const LogsAPI = require('./logapi')
-const Passport = require('./passport')
-const Nodemailer = require('./nodemailer')
-const wlogger = require('./wlogger')
-const JSONFiles = require('./json-files')
-const config = require('../../config')
-const FullStack = require('./fullstack-cash')
-const BCH = require('./bch')
-
+import LocalDB from './localdb/index.js'
+import LogsAPI from './logapi.js'
+import Passport from './passport.js'
+import Nodemailer from './nodemailer.js'
+import wlogger from './wlogger.js'
+import JSONFiles from './json-files.js'
+import config from '../../config/index.js'
+import FullStack from './fullstack-cash.js'
+import BCH from './bch.js'
 const ONE_HOUR = 60000 * 60
 // const ONE_HOUR = 60000 * 1
 
@@ -86,4 +85,4 @@ class Adapters {
   }
 }
 
-module.exports = Adapters
+export default Adapters

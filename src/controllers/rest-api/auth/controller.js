@@ -1,4 +1,4 @@
-const Passport = require('../../../adapters/passport')
+import Passport from '../../../adapters/passport.js'
 const passport = new Passport()
 
 let _this
@@ -80,4 +80,4 @@ class Auth {
   }
 }
 
-module.exports = Auth
+export default Auth

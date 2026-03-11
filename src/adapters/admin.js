@@ -10,15 +10,19 @@
 */
 
 'use strict'
-const axios = require('axios').default
-const mongoose = require('mongoose')
-const User = require('./localdb/models/users')
-const config = require('../../config')
-const JsonFiles = require('./json-files')
+import axios from 'axios'
+import mongoose from 'mongoose'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import User from './localdb/models/users.js'
+import config from '../../config/index.js'
+import JsonFiles from './json-files.js'
 const jsonFiles = new JsonFiles()
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 const JSON_FILE = `system-user-${config.env}.json`
-const JSON_PATH = `${__dirname.toString()}/../../config/${JSON_FILE}`
+const JSON_PATH = path.join(__dirname, `../../config/${JSON_FILE}`)
 
 const LOCALHOST = `http://localhost:${config.port}`
 const context = {}
@@ -165,4 +169,4 @@ class Admin {
   }
 }
 
-module.exports = Admin
+export default Admin

@@ -1,7 +1,11 @@
-const lineReader = require('line-reader')
-const fs = require('fs')
+import lineReader from 'line-reader'
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import config from '../../config/index.js'
 
-const config = require('../../config')
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 let _this
 
@@ -107,8 +111,7 @@ class LogsApi {
         _this.config.env
       }-${thisYear}-${thisMonth}-${thisDate}.log`
       // console.log(`filename: ${filename}`)
-      const logDir = `${__dirname.toString()}/../../logs/`
-      const fullPath = `${logDir}${filename}`
+      const fullPath = path.join(__dirname, '../../logs', filename)
       // console.log(`fullPath: ${fullPath}`)
 
       return fullPath
@@ -167,4 +170,4 @@ class LogsApi {
   }
 }
 
-module.exports = LogsApi
+export default LogsApi

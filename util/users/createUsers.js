@@ -1,7 +1,6 @@
-const mongoose = require('mongoose')
-
-const config = require('../../config')
-
+import mongoose from 'mongoose'
+import config from '../../config/index.js'
+import User from '../../src/adapters/localdb/models/users.js'
 const EMAIL = 'test@test.com'
 const PASSWORD = 'pass'
 
@@ -13,8 +12,6 @@ async function addUser () {
     config.database,
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
-
-  const User = require('../../src/models/users')
 
   const userData = {
     email: EMAIL,
@@ -34,6 +31,4 @@ async function addUser () {
 }
 addUser()
 
-module.exports = {
-  addUser
-}
+export { addUser }

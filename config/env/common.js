@@ -24,4 +24,4 @@ const config = {
   bchServer: 'https://api.fullstack.cash/v5/'
 }
 
-module.exports = config
+export default config

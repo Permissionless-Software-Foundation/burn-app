@@ -4,8 +4,7 @@
   https://troutsblog.com/blog/clean-architecture
 */
 
-const UserUseCases = require('./user')
-
+import UserUseCases from './user.js'
 class UseCases {
   constructor (localConfig = {}) {
     this.adapters = localConfig.adapters
@@ -31,4 +30,4 @@ class UseCases {
   }
 }
 
-module.exports = UseCases
+export default UseCases

@@ -3,13 +3,11 @@
 */
 
 // Global npm libraries
-const BCHJS = require('@psf/bch-js')
-
+import BCHJS from '@psf/bch-js'
 // Local libraries
-const config = require('../../config')
-const AppUtils = require('./util')
-const wlogger = require('./wlogger')
-
+import config from '../../config/index.js'
+import AppUtils from './util.js'
+import wlogger from './wlogger.js'
 // const LOOP_INTERVAL = 60000 * 5
 const BALANCE_THRESHOLD = 10000 // Satoshis
 // const BALANCE_THRESHOLD = 10000 // Satoshis
@@ -271,4 +269,4 @@ class BCH {
   }
 }
 
-module.exports = BCH
+export default BCH

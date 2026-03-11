@@ -1,8 +1,7 @@
-const server = require('./bin/server.js')
-
+import { startServer } from './bin/server.js'
 // const BurnApp = require('./bin/burn-app')
 // const burnApp = new BurnApp()
 
-server.startServer()
+startServer()
 
 // burnApp.monitorAddress()

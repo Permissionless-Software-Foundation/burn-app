@@ -3,21 +3,21 @@
 */
 
 // Public npm libraries
-const assert = require('chai').assert
-const sinon = require('sinon')
-
+import { assert } from 'chai'
+import sinon from 'sinon'
 // Local support libraries
 // const adapters = require('../../../mocks/adapters')
 // const UseCasesMock = require('../../../mocks/use-cases')
 // const app = require('../../../mocks/app-mock')
 
-const LogsRouter = require('../../../../../src/controllers/rest-api/logapi')
+import LogsRouter from '../../../../../src/controllers/rest-api/logapi/index.js'
 let uut
 let sandbox
 // let ctx
 const useCases = {}
 const adapters = {}
-// const mockContext = require('../../../../unit/mocks/ctx-mock').context
+// import mockContextModule from '../../../mocks/ctx-mock.js'
+// const mockContext = mockContextModule.context
 
 describe('#LogApi-REST-Router', () => {
   // const testUser = {}
