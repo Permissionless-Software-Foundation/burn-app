@@ -3,21 +3,20 @@
 */
 
 // Public npm libraries
-const assert = require('chai').assert
-const sinon = require('sinon')
-const mongoose = require('mongoose')
-
+import { assert } from 'chai'
+import sinon from 'sinon'
+import mongoose from 'mongoose'
 // Local support libraries
-const config = require('../../../config')
-const testUtils = require('../../utils/test-utils')
-const User = require('../../../src/models/users')
+import config from '../../../config/index.js'
+import * as testUtils from '../../utils/test-utils.js'
+import User from '../../../src/adapters/localdb/models/users.js'
+import UserController from '../../../src/controllers/rest-api/users/controller.js'
 
-const UserController = require('../../../src/modules/users/controller')
+import mockContextModule from '../../unit/mocks/ctx-mock.js'
 let uut
 let sandbox
 let ctx
-
-const mockContext = require('../../unit/mocks/ctx-mock').context
+const mockContext = mockContextModule.context
 
 describe('Users', () => {
   let testUser = {}

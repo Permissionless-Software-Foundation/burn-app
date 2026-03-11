@@ -3,14 +3,12 @@
 */
 
 /* eslint-disable no-useless-escape */
+import config from '../../config/index.js'
+import NodeMailer from './nodemailer.js'
+import wlogger from './wlogger.js'
+
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
-
-const config = require('../../config')
-
-const NodeMailer = require('./nodemailer')
 const nodemailer = new NodeMailer()
-const wlogger = require('./wlogger')
-
 let _this
 
 class ContactLib {
@@ -60,4 +58,4 @@ class ContactLib {
     }
   }
 }
-module.exports = ContactLib
+export default ContactLib

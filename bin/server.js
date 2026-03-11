@@ -1,24 +1,23 @@
 // npm libraries
-const Koa = require('koa')
-const bodyParser = require('koa-bodyparser')
-const convert = require('koa-convert')
-const logger = require('koa-logger')
-const mongoose = require('mongoose')
-const session = require('koa-generic-session')
-const passport = require('koa-passport')
-const mount = require('koa-mount')
-const serve = require('koa-static')
-const cors = require('kcors')
-
+import Koa from 'koa'
+import bodyParser from 'koa-bodyparser'
+import convert from 'koa-convert'
+import logger from 'koa-logger'
+import mongoose from 'mongoose'
+import session from 'koa-generic-session'
+import passport from 'koa-passport'
+import mount from 'koa-mount'
+import serve from 'koa-static'
+import cors from 'kcors'
 // Local libraries
-const config = require('../config') // this first.
+import config from '../config/index.js' // this first.
+import AdminLib from '../src/adapters/admin.js'
+import Controllers from '../src/controllers/index.js'
+import '../config/passport.js'
 
-const AdminLib = require('../src/adapters/admin')
+import errorMiddleware from '../src/middleware/index.js'
+import wlogger from '../src/adapters/wlogger.js'
 const adminLib = new AdminLib()
-
-const errorMiddleware = require('../src/middleware')
-const wlogger = require('../src/adapters/wlogger')
-
 async function startServer () {
   // Create a Koa instance.
   const app = new Koa()
@@ -49,12 +48,10 @@ async function startServer () {
   app.use(mount('/logs', serve(`${process.cwd()}/config/logs`)))
 
   // User Authentication
-  require('../config/passport')
   app.use(passport.initialize())
   app.use(passport.session())
 
   // Attach REST API and JSON RPC controllers to the app.
-  const Controllers = require('../src/controllers')
   const controllers = new Controllers()
   await controllers.initAdapters()
   await controllers.initUseCases()
@@ -81,7 +78,5 @@ async function startServer () {
 // startServer()
 
 // export default app
-// module.exports = app
-module.exports = {
-  startServer
-}
+// export default app
+export { startServer }

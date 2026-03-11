@@ -3,14 +3,17 @@
 */
 
 // Public NPM libraries
-const mongoose = require('mongoose')
-const axios = require('axios').default
-
+import mongoose from 'mongoose'
+import axios from 'axios'
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
 // Local libraries
-const config = require('../../config')
-const User = require('../../src/adapters/localdb/models/users')
-
+import config from '../../config/index.js'
+import User from '../../src/adapters/localdb/models/users.js'
 const LOCALHOST = `http://localhost:${config.port}`
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // Remove all collections from the DB.
 async function cleanDb () {
@@ -110,8 +113,8 @@ async function loginTestUser () {
 
 async function loginAdminUser () {
   try {
-    const FILENAME = `../../config/system-user-${config.env}.json`
-    const adminUserData = require(FILENAME)
+    const filename = path.join(__dirname, `../../config/system-user-${config.env}.json`)
+    const adminUserData = JSON.parse(fs.readFileSync(filename, 'utf8'))
     console.log(`adminUserData: ${JSON.stringify(adminUserData, null, 2)}`)
 
     const options = {
@@ -149,8 +152,8 @@ async function getAdminJWT () {
     // process.env.KOA_ENV = process.env.KOA_ENV || 'dev'
     // console.log(`env: ${process.env.KOA_ENV}`)
 
-    const FILENAME = `../../config/system-user-${config.env}.json`
-    const adminUserData = require(FILENAME)
+    const filename = path.join(__dirname, `../../config/system-user-${config.env}.json`)
+    const adminUserData = JSON.parse(fs.readFileSync(filename, 'utf8'))
     // console.log(`adminUserData: ${JSON.stringify(adminUserData, null, 2)}`)
 
     return adminUserData.token
@@ -160,11 +163,4 @@ async function getAdminJWT () {
   }
 }
 
-module.exports = {
-  cleanDb,
-  createUser,
-  loginTestUser,
-  loginAdminUser,
-  getAdminJWT,
-  deleteAllUsers
-}
+export { cleanDb, createUser, loginTestUser, loginAdminUser, getAdminJWT, deleteAllUsers }

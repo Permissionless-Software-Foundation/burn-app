@@ -5,14 +5,13 @@
 */
 
 // Public npm libraries
-const assert = require('chai').assert
-const axios = require('axios').default
-
+import { assert } from 'chai'
+import axios from 'axios'
 // Local support libraries
-const config = require('../../../config')
-const app = require('../../../bin/server')
-const testUtils = require('../../utils/test-utils')
-const AdminLib = require('../../../src/adapters/admin')
+import config from '../../../config/index.js'
+import { startServer } from '../../../bin/server.js'
+import * as testUtils from '../../utils/test-utils.js'
+import AdminLib from '../../../src/adapters/admin.js'
 const adminLib = new AdminLib()
 
 // const request = supertest.agent(app.listen())
@@ -23,7 +22,7 @@ const LOCALHOST = `http://localhost:${config.port}`
 describe('Auth', () => {
   before(async () => {
     // This should be the first instruction. It starts the REST API server.
-    await app.startServer()
+    await startServer()
 
     // Delete all previous users in the database.
     await testUtils.deleteAllUsers()

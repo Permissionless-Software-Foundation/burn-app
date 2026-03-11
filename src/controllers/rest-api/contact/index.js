@@ -3,11 +3,9 @@
 */
 
 // Public npm libraries.
-const Router = require('koa-router')
-
+import Router from 'koa-router'
 // Local libraries.
-const ContactRESTControllerLib = require('./controller')
-
+import ContactRESTControllerLib from './controller.js'
 class ContactRouter {
   constructor (localConfig = {}) {
     // Dependency Injection.
@@ -53,4 +51,4 @@ class ContactRouter {
   }
 }
 
-module.exports = ContactRouter
+export default ContactRouter

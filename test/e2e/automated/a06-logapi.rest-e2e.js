@@ -1,16 +1,16 @@
-const config = require('../../../config')
-const assert = require('chai').assert
+import config from '../../../config/index.js'
+import { assert } from 'chai'
 
-const axios = require('axios').default
-const sinon = require('sinon')
+import axios from 'axios'
+import sinon from 'sinon'
+import util from 'util'
 
-const util = require('util')
+import LogsController from '../../../src/controllers/rest-api/logapi/controller.js'
+import mockContextModule from '../../unit/mocks/ctx-mock.js'
 util.inspect.defaultOptions = { depth: 1 }
 
 const LOCALHOST = `http://localhost:${config.port}`
-
-const LogsController = require('../../../src/controllers/rest-api/logapi/controller')
-const mockContext = require('../../unit/mocks/ctx-mock').context
+const mockContext = mockContextModule.context
 
 let sandbox
 let uut

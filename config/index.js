@@ -1,7 +1,14 @@
-const common = require('./env/common')
+import common from './env/common.js'
+import development from './env/development.js'
+import test from './env/test.js'
+import production from './env/production.js'
 
 const env = process.env.BURN_ENV || 'development'
+const envConfigMap = {
+  development,
+  test,
+  production
+}
 
-const config = require(`./env/${env}`)
-
-module.exports = Object.assign({}, common, config)
+const config = envConfigMap[env] || development
+export default Object.assign({}, common, config)

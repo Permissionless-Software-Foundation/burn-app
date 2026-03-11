@@ -38,4 +38,5 @@ const localdb = {
   }
 }
 
-module.exports = { localdb }
+export default { localdb }
+export { localdb }

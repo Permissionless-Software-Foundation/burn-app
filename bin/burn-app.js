@@ -1,23 +1,20 @@
 /*
  */
 
-const config = require('../config')
-const wlogger = require('../src/adapters/wlogger')
-
-const BCHJS = require('@psf/bch-js')
-
+import config from '../config/index.js'
+import wlogger from '../src/adapters/wlogger.js'
+import BCHJS from '@psf/bch-js'
 // Instantiate the JWT handling library for FullStack.cash.
-const JwtLib = require('jwt-bch-lib')
+import JwtLib from 'jwt-bch-lib'
+
+import BCH from '../src/adapters/bch.js'
+import AppUtils from '../src/adapters/util.js'
 const jwtLib = new JwtLib({
   // Overwrite default values with the values in the config file.
   server: 'https://auth.fullstack.cash',
   login: process.env.FULLSTACKLOGIN,
   password: process.env.FULLSTACKPASS
 })
-
-const BCH = require('../src/adapters/bch')
-
-const AppUtils = require('../src/adapters/util')
 const appUtils = new AppUtils()
 
 const LOOP_INTERVAL = 60000 * 5
@@ -134,4 +131,4 @@ class BurnApp {
   }
 }
 
-module.exports = BurnApp
+export default BurnApp

@@ -6,14 +6,18 @@
 
 'use strict'
 
-const winston = require('winston')
-require('winston-daily-rotate-file')
+import winston from 'winston'
+import 'winston-daily-rotate-file'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import config from '../../config/index.js'
 
-const config = require('../../config')
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // Configure daily-rotation transport.
 const transport = new winston.transports.DailyRotateFile({
-  filename: `${__dirname.toString()}/../../logs/koa-${config.env}-%DATE%.log`,
+  filename: path.join(__dirname, `../../logs/koa-${config.env}-%DATE%.log`),
   datePattern: 'YYYY-MM-DD',
   zippedArchive: false,
   maxSize: '1m', // 1 megabyte
@@ -51,4 +55,4 @@ wlogger.add(
   })
 )
 
-module.exports = wlogger
+export default wlogger
