@@ -21,7 +21,8 @@ const config = {
 
   tokenLiquidityAddr: 'bitcoincash:qr9xtwn9u22wqh7j00fy6k4jg9ktmdn69utna2wmnh',
 
-  bchServer: 'https://api.fullstack.cash/v5/'
+  // bchServer: 'https://api.fullstack.cash/v5/'
+  bchServer: process.env.BCH_SERVER ? process.env.BCH_SERVER : 'http://192.168.2.127:5942/v6/'
 }
 
 export default config

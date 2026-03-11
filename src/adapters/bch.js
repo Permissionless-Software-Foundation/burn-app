@@ -19,7 +19,10 @@ class BCH {
     _this = this
 
     console.log(`Initializing BCH library with apiToken: ${localConfig.apiToken}`)
-    this.bchjs = new BCHJS({ restURL: config.bchServer, apiToken: localConfig.apiToken })
+    this.bchjs = new BCHJS({
+      restURL: config.bchServer,
+      apiToken: localConfig.apiToken
+    })
 
     this.appUtils = new AppUtils()
     // this.walletInfo = this.appUtils.openWallet()

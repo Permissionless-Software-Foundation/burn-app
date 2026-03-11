@@ -14,7 +14,7 @@ import JSONFiles from './json-files.js'
 import config from '../../config/index.js'
 import FullStack from './fullstack-cash.js'
 import BCH from './bch.js'
-const ONE_HOUR = 60000 * 60
+// const ONE_HOUR = 60000 * 60
 // const ONE_HOUR = 60000 * 1
 
 let _this
@@ -39,18 +39,18 @@ class Adapters {
   async startAdapters () {
     try {
       // Skip this section when running automated e2e tests.
-      if (this.config.env !== 'test') {
-        // Get a JWT token from FullStack.cash and update the BCHJSTOKEN environment
-        // variable.
-        const apiToken = await this.fullstack.getJwt()
+      // if (this.config.env !== 'test') {
+      //   // Get a JWT token from FullStack.cash and update the BCHJSTOKEN environment
+      //   // variable.
+      //   const apiToken = await this.fullstack.getJwt()
 
-        // Start an interval to renew the JWT token.
-        this.fullstackInterval = setInterval(this.refreshBchJS, ONE_HOUR)
+      //   // Start an interval to renew the JWT token.
+      //   this.fullstackInterval = setInterval(this.refreshBchJS, ONE_HOUR)
 
-        await this.renewBchJS(apiToken)
+      //   await this.renewBchJS(apiToken)
 
-        console.log('Async Adapters have been started.')
-      }
+      //   console.log('Async Adapters have been started.')
+      // }
     } catch (err) {
       console.error('Error in adapters/index.js/startAdapters()')
       throw err
