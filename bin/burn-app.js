@@ -2,7 +2,7 @@
  */
 
 const config = require('../config')
-const wlogger = require('../src/lib/wlogger')
+const wlogger = require('../src/adapters/wlogger')
 
 const BCHJS = require('@psf/bch-js')
 
@@ -15,9 +15,9 @@ const jwtLib = new JwtLib({
   password: process.env.FULLSTACKPASS
 })
 
-const BCH = require('../src/lib/bch')
+const BCH = require('../src/adapters/bch')
 
-const AppUtils = require('../src/lib/util')
+const AppUtils = require('../src/adapters/util')
 const appUtils = new AppUtils()
 
 const LOOP_INTERVAL = 60000 * 5

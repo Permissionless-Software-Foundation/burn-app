@@ -12,18 +12,16 @@ const config = {
 
   emailServer: process.env.EMAILSERVER ? process.env.EMAILSERVER : 'mail.someserver.com',
   emailUser: process.env.EMAILUSER ? process.env.EMAILUSER : 'noreply@someserver.com',
-  emailPassword: process.env.EMAILPASS ? process.env.EMAILPASS : 'emailpassword'
-}
+  emailPassword: process.env.EMAILPASS ? process.env.EMAILPASS : 'emailpassword',
 
-// console.log(`config.network: ${config.network}`)
-if (config.network === 'testnet') {
-  config.tokenLiquidityAddr =
-    'bchtest:qpz5hez3qmzrnjzdfu03tf7fp6ca0rlsaqvrxmfpyd'
-  config.bchServer = 'https://tapi.fullstack.cash/v4/'
-} else {
-  config.tokenLiquidityAddr =
-    'bitcoincash:qrnn49rx0p4xh78tts79utf0zv26vyru6vqtl9trd3'
-  config.bchServer = 'https://api.fullstack.cash/v4/'
+  fullstackAuthServer: process.env.FULLSTACK_AUTH ? process.env.FULLSTACK_AUTH : 'https://auth.fullstack.cash',
+  fullstackLogin: process.env.FULLSTACKLOGIN ? process.env.FULLSTACKLOGIN : 'demo@demo.com',
+  fullstackPass: process.env.FULLSTACKPASS ? process.env.FULLSTACKPASS : 'demo',
+  getAPITokenAtStartup: !process.env.DO_NOT_GET_JWT,
+
+  tokenLiquidityAddr: 'bitcoincash:qr9xtwn9u22wqh7j00fy6k4jg9ktmdn69utna2wmnh',
+
+  bchServer: 'https://api.fullstack.cash/v5/'
 }
 
 module.exports = config
