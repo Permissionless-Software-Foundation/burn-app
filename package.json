@@ -34,7 +34,7 @@
   },
   "repository": "Permissionless-Software-Foundation/burn-app",
   "dependencies": {
-    "@psf/bch-js": "7.1.13",
+    "@psf/bch-js": "7.1.14",
     "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "glob": "^7.1.6",

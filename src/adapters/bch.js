@@ -28,6 +28,20 @@ class BCH {
     // this.walletInfo = this.appUtils.openWallet()
   }
 
+  isTransientBroadcastErr (err) {
+    if (!err) return false
+
+    const code = String(err.code || err?.cause?.code || '').toUpperCase()
+    const msg = String(err.message || '').toLowerCase()
+    const causeMsg = String(err?.cause?.message || '').toLowerCase()
+
+    if (['ECONNRESET', 'EPIPE', 'ETIMEDOUT'].includes(code)) return true
+    if (msg.includes('socket hang up')) return true
+    if (causeMsg.includes('socket hang up')) return true
+
+    return false
+  }
+
   // This is the main app biz logic that is called by a timer interval.
   // Check the wallet balance. Forward funds in order to burn tokens, if they
   // are above a threshold.
@@ -262,9 +276,27 @@ class BCH {
   // or throws an error.
   async broadcastTx (hex) {
     try {
-      const txid = await this.bchjs.RawTransactions.sendRawTransaction([hex])
+      const maxRetries = 1
+      let lastErr
 
-      return txid
+      for (let attempt = 0; attempt <= maxRetries; attempt++) {
+        try {
+          const txid = await this.bchjs.RawTransactions.sendRawTransaction([hex])
+          return txid
+        } catch (err) {
+          lastErr = err
+
+          const isLastAttempt = attempt >= maxRetries
+          const shouldRetry = this.isTransientBroadcastErr(err) && !isLastAttempt
+          if (!shouldRetry) throw err
+
+          wlogger.warn(
+            `Transient error broadcasting tx. Retrying attempt ${attempt + 2} of ${maxRetries + 1}.`
+          )
+        }
+      }
+
+      throw lastErr
     } catch (err) {
       console.log('Error in bchjs.js/broadcastTx()')
       throw err
