@@ -52,7 +52,7 @@
     "koa-static": "^5.0.0",
     "line-reader": "^0.4.0",
     "mongoose": "^5.11.15",
-    "nodemailer": "^6.4.17",
+    "nodemailer": "^8.0.4",
     "passport-local": "^1.0.0",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.0"
