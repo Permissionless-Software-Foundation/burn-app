@@ -19,7 +19,7 @@ const config = {
   fullstackPass: process.env.FULLSTACKPASS ? process.env.FULLSTACKPASS : 'demo',
   getAPITokenAtStartup: !process.env.DO_NOT_GET_JWT,
 
-  tokenLiquidityAddr: 'bitcoincash:qr9xtwn9u22wqh7j00fy6k4jg9ktmdn69utna2wmnh',
+  tokenLiquidityAddr: 'bitcoincash:qze5hvl8jpaej4mnv9dxxatae076sc59zyz6pzqe8e',
 
   // bchServer: 'https://api.fullstack.cash/v5/'
   bchServer: process.env.BCH_SERVER ? process.env.BCH_SERVER : 'http://192.168.2.127:5942/v6/'
